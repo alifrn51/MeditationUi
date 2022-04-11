@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.meditationtutorial.R
 import com.example.meditationtutorial.common.standardQuadFromTo
+import com.example.meditationtutorial.data.BottomMenuContent
 import com.example.meditationtutorial.data.Feature
 import com.example.meditationtutorial.ui.theme.*
 
@@ -58,42 +59,141 @@ fun HomeScreen() {
 
             CurrentMeditation()
 
-            FeatureSection(feature = listOf(
-                Feature(
-                    title = "Sleep meditation",
-                    R.drawable.ic_headphone,
-                    BlueViolet1,
-                    BlueViolet2,
-                    BlueViolet3
-                ),
-                Feature(
-                    title = "Tips for sleeping",
-                    R.drawable.ic_videocam,
-                    LightGreen1,
-                    LightGreen2,
-                    LightGreen3
-                ),
-                Feature(
-                    title = "Night island",
-                    R.drawable.ic_headphone,
-                    OrangeYellow1,
-                    OrangeYellow2,
-                    OrangeYellow3
-                ),
-                Feature(
-                    title = "Calming sounds",
-                    R.drawable.ic_headphone,
-                    Beige1,
-                    Beige2,
-                    Beige3
+            FeatureSection(
+                feature = listOf(
+                    Feature(
+                        title = "Sleep meditation",
+                        R.drawable.ic_headphone,
+                        BlueViolet1,
+                        BlueViolet2,
+                        BlueViolet3
+                    ),
+                    Feature(
+                        title = "Tips for sleeping",
+                        R.drawable.ic_videocam,
+                        LightGreen1,
+                        LightGreen2,
+                        LightGreen3
+                    ),
+                    Feature(
+                        title = "Night island",
+                        R.drawable.ic_headphone,
+                        OrangeYellow1,
+                        OrangeYellow2,
+                        OrangeYellow3
+                    ),
+                    Feature(
+                        title = "Calming sounds",
+                        R.drawable.ic_headphone,
+                        Beige1,
+                        Beige2,
+                        Beige3
+                    )
                 )
-            ))
+            )
 
         }
+
+        BottomMenu(
+            items = listOf(
+                BottomMenuContent("Home", R.drawable.ic_home),
+                BottomMenuContent("Meditate", R.drawable.ic_bubble),
+                BottomMenuContent("Sleep", R.drawable.ic_moon),
+                BottomMenuContent("Profile", R.drawable.ic_profile),
+            ),
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+        )
     }
 
 }
 
+
+@Composable
+fun BottomMenu(
+    items: List<BottomMenuContent>,
+    modifier: Modifier = Modifier,
+    activeHighLightColor: Color = ButtonBlue,
+    activeTextColor: Color = TextWhite,
+    inactiveTextColor: Color = AquaBlue,
+    initialSelectedItem: Int = 0
+) {
+
+    var selectedItemIndex by remember {
+        mutableStateOf(initialSelectedItem)
+    }
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(DeepBlue)
+            .padding(15.dp)
+    ) {
+
+        items.forEachIndexed { index, item ->
+
+            BottomMenuItem(
+                item = item,
+                isSelected = index == selectedItemIndex ,
+                activeHighLightColor = activeHighLightColor,
+                activeTextColor = activeTextColor,
+                inactiveTextColor = inactiveTextColor
+            ) {
+                selectedItemIndex = index
+            }
+
+        }
+
+    }
+
+
+}
+
+@Composable
+fun BottomMenuItem(
+    item: BottomMenuContent,
+    isSelected: Boolean = false,
+    activeHighLightColor: Color = ButtonBlue,
+    activeTextColor: Color = Color.White,
+    inactiveTextColor: Color = AquaBlue,
+    onItemClick: () -> Unit
+) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .clickable {
+                onItemClick()
+            }
+    ) {
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (isSelected) activeHighLightColor else Color.Transparent)
+                .padding(10.dp)
+        ) {
+
+            Icon(
+                painter = painterResource(id = item.iconId),
+                contentDescription = item.title,
+                tint = if (isSelected) activeTextColor else inactiveTextColor,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Text(
+            text = item.title,
+            color = if (isSelected) activeTextColor else inactiveTextColor
+        )
+
+    }
+
+
+}
 
 @Composable
 fun GreetingSection(
